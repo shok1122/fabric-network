@@ -1,0 +1,17 @@
+# Copyright IBM Corp. All Rights Reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+
+PeerOrgs:
+  {% for o in orgs %}
+  - Name: {{ o['name'] }}
+    Domain: {{ o['name'] }}.{{ domain }}
+    EnableNodeOUs: true
+    Template:
+      Count: {{ o['peers'] }}
+      SANS:
+        - localhost
+    Users:
+      Count: {{ o['peers'] }}
+  {% endfor %}

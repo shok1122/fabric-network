@@ -32,7 +32,7 @@ Organizations:
         OrdererEndpoints:
             - orderer.{{ domain }}:7050
 
-{% for o in orgs -%}
+{%- for o in orgs %}
     - &{{ o['name'] }}
 
         Name: {{ o['name'] }}
@@ -57,7 +57,7 @@ Organizations:
         AnchorPeers:
             - Host: peer0.{{ o['name'] }}.{{ domain }}
               Port: 7051
-{% endfor -%}
+{%- endfor %}
 
 ################################################################################
 #
@@ -218,36 +218,24 @@ Channel: &ChannelDefaults
 #
 #   PROFILES
 #
-#   Different configuration profiles may be encoded here to be specified as
-#   parameters to the configtxgen tool. The profiles which specify consortiums
-#   are to be used for generating the orderer genesis block. With the correct
-#   consortium members defined in the orderer genesis block, channel creation
-#   requests may be generated with only the org member names and a consortium
-#   name.
-#
 ################################################################################
 Profiles:
-    SampleSingleMSPSolo:
+    DefaultProfile:
         <<: *ChannelDefaults
         Orderer:
             <<: *OrdererDefaults
             Organizations:
                 - *orderer-org
         Consortiums:
-            SampleConsortium:
+            DefaultConsortium:
                 Organizations:
 {%- for o in orgs %}
                     - *{{ o['name'] }}
 {%- endfor %}
 
-    # SampleSingleMSPChannel defines a channel with only the sample org as a
-    # member. It is designed to be used in conjunction with SampleSingleMSPSolo
-    # and SampleSingleMSPKafka orderer profiles.   Note, for channel creation
-    # profiles, only the 'Application' section and consortium # name are
-    # considered.
     SampleSingleMSPChannel:
         <<: *ChannelDefaults
-        Consortium: SampleConsortium
+        Consortium: DefaultConsortium
         Application:
             <<: *ApplicationDefaults
             Organizations:

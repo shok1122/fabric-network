@@ -35,7 +35,7 @@ def init():
 
     for o in all_conf['orgs']:
         for peer_num in range(int(o['peers'])):
-            print(peer_num)
+            print(f"=== {o['name']} -- peer{peer_num} ===")
             peer_name = f"peer{peer_num}"
             peer_conf = {
                 'domain': all_conf['domain'],

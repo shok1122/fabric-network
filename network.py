@@ -1,7 +1,10 @@
 import os
+import paramiko
+import scp
 import sys
 import shutil
 import subprocess
+import tarfile
 import yaml
 from jinja2 import Template, Environment, FileSystemLoader
 from pprint import pprint
@@ -54,19 +57,61 @@ def init():
             save_file(f"conf/docker-compose-{peer_name}-{o['name']}.yaml", ret_text)
 
 def create_org():
-    if os.path.exists('organizations/ordererOrganizations'):
-        shutil.rmtree('organizations/ordererOrganizations')
-    subprocess.call('cryptogen generate --config=./conf/crypto-config-orderer.yaml --output=organizations', shell=True)
+    path = 'organizations/ordererOrganizations'
+    if os.path.exists(path):
+        shutil.rmtree(path)
 
-    if os.path.exists('organizations/peerOrganizations'):
-        shutil.rmtree('organizations/peerOrganizations')
+    path = 'organizations/peerOrganizations'
+    if os.path.exists(path):
+        shutil.rmtree(path)
+
+    subprocess.call('cryptogen generate --config=./conf/crypto-config-orderer.yaml --output=organizations', shell=True)
     subprocess.call('cryptogen generate --config=./conf/crypto-config-org.yaml --output=organizations', shell=True)
 
 def create_consortium():
     subprocess.call('configtxgen -profile DefaultProfile -channelID system-channel -outputBlock ./system-genesis-block/genesis.block', shell=True)
 
+def make_tarfile(output_filename, source_dir):
+    with tarfile.open(output_filename, "w:gz") as tar:
+        tar.add(source_dir, arcname=os.path.basename(source_dir))
+
+def distribute_conf(peer, org, domain, conf):
+    print(peer + '.' + org + '.' + domain)
+    path = f"organizations/peerOrganizations/{org}.{domain}/"
+    tar_file = f"cache/{peer}.{org}.{domain}.tar.gz"
+    make_tarfile(tar_file, path)
+
+    with paramiko.SSHClient() as sshc:
+        sshc.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        hostname = f"{peer}.{org}.{domain}"
+        sshc.connect(
+            hostname=hostname,
+            port=conf['port'],
+            username=conf['username'],
+            password=conf['password'])
+        with scp.SCPClient(sshc.get_transport()) as scpc:
+            scpc.put(files=tar_file, remote_path='/tmp')
+
+
+def distribute_conf_r():
+    conf = None
+    with open('./conf/crypto-config-org.yaml') as f:
+        conf = yaml.safe_load(f)
+    conn_list = None
+    with open('./secret/connection_list.yaml') as f:
+        conn_list = yaml.safe_load(f)
+
+    for x in conf['PeerOrgs']:
+        org = (x['Name'])
+        for i in range(x['Template']['Count']):
+            peer = 'peer' + str(i)
+            distribute_conf(peer, org, all_conf['domain'], conn_list[org][peer])
+
 if mode == "init":
     init()
     create_org()
     create_consortium()
+elif mode == "distribution":
+    distribute_conf_r()
+
 

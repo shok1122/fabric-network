@@ -40,15 +40,15 @@ services:
       - CORE_PEER_LOCALMSPID={{ org }}
     volumes:
         - /var/run/:/host/var/run/
-        - /home/x/dev/fabric-orderer/organizations/peerOrganizations/{{ org }}.{{ domain }}/peers/{{ peer }}.{{ org }}.{{ domain }}/msp:/etc/hyperledger/fabric/msp
-        - /home/x/dev/fabric-orderer/organizations/peerOrganizations/{{ org }}.{{ domain }}/peers/{{ peer }}.{{ org }}.{{ domain }}/tls:/etc/hyperledger/fabric/tls
+        - $PWD/organizations/peerOrganizations/{{ org }}.{{ domain }}/peers/{{ peer }}.{{ org }}.{{ domain }}/msp:/etc/hyperledger/fabric/msp
+        - $PWD/organizations/peerOrganizations/{{ org }}.{{ domain }}/peers/{{ peer }}.{{ org }}.{{ domain }}/tls:/etc/hyperledger/fabric/tls
         - {{ peer }}.{{ org }}.{{ domain }}:/var/hyperledger/production
     working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
     command: peer node start
     ports:
       - 7051:7051
 
-  cli:
+  cli.{{ peer }}.{{ org }}.{{ domain }}:
     container_name: cli
     image: hyperledger/fabric-tools
     tty: true
@@ -72,12 +72,11 @@ services:
     volumes:
         - /var/run/:/host/var/run/
         #- ../../chaincode/:/opt/gopath/src/github.com/chaincode
-        - /home/x/dev/fabric-orderer/organizations:/opt/gopath/src/github.com/hyperledger/fabric/peer/organizations
-        - /home/x/dev/fabric-orderer/scripts:/opt/gopath/src/github.com/hyperledger/fabric/peer/scripts/
-        - /home/x/dev/fabric-orderer/conf:/opt/gopath/src/github.com/hyperledger/fabric/peer/conf/
-        - /home/x/dev/fabric-orderer/applicant:/opt/gopath/src/github.com/hyperledger/fabric/peer/applicant/
-        - /home/x/dev/fabric-orderer/chaincodes:/opt/gopath/src/github.com/hyperledger/fabric/peer/chaincodes/
-        - /home/x/dev/fabric-orderer/cache:/opt/gopath/src/github.com/hyperledger/fabric/peer/cache/
+        - $PWD/organizations:/opt/gopath/src/github.com/hyperledger/fabric/peer/organizations
+        - $PWD/scripts:/opt/gopath/src/github.com/hyperledger/fabric/peer/scripts/
+        - $PWD/conf:/opt/gopath/src/github.com/hyperledger/fabric/peer/conf/
+        - $PWD/chaincodes:/opt/gopath/src/github.com/hyperledger/fabric/peer/chaincodes/
+        - $PWD/cache:/opt/gopath/src/github.com/hyperledger/fabric/peer/cache/
     depends_on:
       - {{ peer }}.{{ org }}.{{ domain }}
 

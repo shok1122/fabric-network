@@ -38,11 +38,11 @@ services:
     working_dir: /opt/gopath/src/github.com/hyperledger/fabric
     command: orderer
     volumes:
-        - /home/x/dev/fabric-orderer/organizations/ordererOrganizations/{{ domain }}/orderers/orderer.{{ domain }}/msp:/var/hyperledger/orderer/msp
-        - /home/x/dev/fabric-orderer/organizations/ordererOrganizations/{{ domain }}/orderers/orderer.{{ domain }}/tls/:/var/hyperledger/orderer/tls
+        - $PWD/organizations/ordererOrganizations/{{ domain }}/orderers/orderer.{{ domain }}/msp:/var/hyperledger/orderer/msp
+        - $PWD/organizations/ordererOrganizations/{{ domain }}/orderers/orderer.{{ domain }}/tls/:/var/hyperledger/orderer/tls
+        - $PWD/system-genesis-block/genesis.block:/var/hyperledger/orderer/orderer.genesis.block
+        - $PWD/conf/orderer.yaml:/etc/hyperledger/fabric/orderer.yaml
         - orderer.{{ domain }}:/var/hyperledger/production/orderer
-        - /home/x/dev/fabric-orderer/system-genesis-block/genesis.block:/var/hyperledger/orderer/orderer.genesis.block
-        - /home/x/dev/fabric-orderer/conf/orderer.yaml:/etc/hyperledger/fabric/orderer.yaml
     ports:
       - 7050:7050
 

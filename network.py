@@ -1,7 +1,14 @@
+import os
 import sys
+import shutil
+import subprocess
 import yaml
 from jinja2 import Template, Environment, FileSystemLoader
 from pprint import pprint
+
+ENV_PATH = os.getenv('PATH')
+os.environ['PATH'] = os.getcwd() + '/bin' + ':' + ENV_PATH
+print(os.getenv('PATH'))
 
 mode = sys.argv[1]
 
@@ -45,6 +52,16 @@ def init():
             ret_text = render('docker-compose-peer.yaml.tmpl', peer_conf)
             save_file(f"conf/docker-compose-{peer_name}-{o['name']}.yaml", ret_text)
 
+def create_org():
+    if os.path.exists('organizations/ordererOrganizations'):
+        shutil.rmtree('organizations/ordererOrganizations')
+    subprocess.call('cryptogen generate --config=./conf/crypto-config-orderer.yaml --output=organizations', shell=True)
+
+    if os.path.exists('organizations/peerOrganizations'):
+        shutil.rmtree('organizations/peerOrganizations')
+    subprocess.call('cryptogen generate --config=./conf/crypto-config-org.yaml --output=organizations', shell=True)
+
 if mode == "init":
     init()
+    create_org()
 

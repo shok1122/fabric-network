@@ -236,9 +236,9 @@ Profiles:
         Consortiums:
             SampleConsortium:
                 Organizations:
-{% for o in orgs -%}
+{%- for o in orgs %}
                     - *{{ o['name'] }}
-{% endfor -%}
+{%- endfor %}
 
     # SampleSingleMSPChannel defines a channel with only the sample org as a
     # member. It is designed to be used in conjunction with SampleSingleMSPSolo
@@ -251,7 +251,7 @@ Profiles:
         Application:
             <<: *ApplicationDefaults
             Organizations:
-{% for o in orgs %}
+{%- for o in orgs %}
                 - <<: *{{ o['name'] }}
-{% endfor %}
+{%- endfor %}
 

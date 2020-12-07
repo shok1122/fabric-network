@@ -1,5 +1,6 @@
 bin/*
 conf/*
 organizations/*
+system-genesis-block/*
 
 !.gitkeep

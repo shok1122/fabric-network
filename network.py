@@ -8,6 +8,7 @@ from pprint import pprint
 
 ENV_PATH = os.getenv('PATH')
 os.environ['PATH'] = os.getcwd() + '/bin' + ':' + ENV_PATH
+os.environ['FABRIC_CFG_PATH'] = './conf'
 print(os.getenv('PATH'))
 
 mode = sys.argv[1]
@@ -61,7 +62,11 @@ def create_org():
         shutil.rmtree('organizations/peerOrganizations')
     subprocess.call('cryptogen generate --config=./conf/crypto-config-org.yaml --output=organizations', shell=True)
 
+def create_consortium():
+    subprocess.call('configtxgen -profile DefaultProfile -channelID system-channel -outputBlock ./system-genesis-block/genesis.block', shell=True)
+
 if mode == "init":
     init()
     create_org()
+    create_consortium()
 

@@ -31,6 +31,16 @@ def save_file(path, data):
     with open(path, 'w') as f:
         f.write(data)
 
+def install():
+    # install binaries
+    files = os.listdir('bin')
+    files = [ f for f in files if not f.startswith('.') ]
+    if not files:
+        subprocess.call('script/install-fabric.sh binary', shell=True)
+
+    # install docker images
+    subprocess.call('script/install-fabric.sh docker', shell=True)
+
 def init():
     ret_text = render('configtx.yaml.tmpl', all_conf)
     save_file('conf/configtx.yaml', ret_text)
@@ -107,7 +117,9 @@ def distribute_conf_r():
             peer = 'peer' + str(i)
             distribute_conf(peer, org, all_conf['domain'], conn_list[org][peer])
 
-if mode == "init":
+if mode == "install":
+    install()
+elif mode == "init":
     init()
     create_org()
     create_consortium()

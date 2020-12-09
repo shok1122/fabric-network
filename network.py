@@ -61,7 +61,7 @@ def init():
     save_file('conf/crypto-config-org.yaml', ret_text)
 
     ret_text = render('docker-compose-orderer.yaml.tmpl', all_conf)
-    save_file('docker/docker-compose-orderer.yaml', ret_text)
+    save_file('docker/docker-compose.yaml', ret_text)
 
     domain = all_conf['domain']
 
@@ -132,6 +132,9 @@ def distribution():
                         files=f"cache/docker-compose-{peer}-{org}.{domain}.yaml",
                         remote_path='/tmp')
 
+def network_up():
+    subprocess.call('docker-compose -f docker/docker-compose.yaml up -d', shell=True)
+
 if mode == "install":
     install()
 elif mode == "init":
@@ -142,4 +145,13 @@ elif mode == "packaging":
     packing_conf_r()
 elif mode == "distribution":
     distribution()
+elif mode == "up":
+    network_up()
+elif mode == "all":
+    init()
+    create_org()
+    create_consortium()
+    packing_conf_r()
+    distribution()
+    network_up()
 

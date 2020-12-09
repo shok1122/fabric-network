@@ -61,19 +61,21 @@ def init():
     save_file('conf/crypto-config-org.yaml', ret_text)
 
     ret_text = render('docker-compose-orderer.yaml.tmpl', all_conf)
-    save_file('conf/docker-compose-orderer.yaml', ret_text)
+    save_file('docker/docker-compose-orderer.yaml', ret_text)
+
+    domain = all_conf['domain']
 
     for o in all_conf['orgs']:
         for peer_num in range(int(o['peers'])):
             print(f"=== {o['name']} -- peer{peer_num} ===")
             peer_name = f"peer{peer_num}"
             peer_conf = {
-                'domain': all_conf['domain'],
+                'domain': domain,
                 'org': o['name'],
                 'peer': peer_name
             }
             ret_text = render('docker-compose-peer.yaml.tmpl', peer_conf)
-            save_file(f"conf/docker-compose-{peer_name}-{o['name']}.yaml", ret_text)
+            save_file(f"cache/docker-compose-{peer_name}-{o['name']}.{domain}.yaml", ret_text)
 
 def create_org():
     path = 'organizations/ordererOrganizations'
@@ -123,8 +125,12 @@ def distribution():
                     password=connection_list[org][peer]['password'])
                 with scp.SCPClient(sshc.get_transport()) as scpc:
                     print(hostname)
-                    tar_file = f"cache/{peer}-{org}.{domain}.tar.gz"
-                    scpc.put(files=tar_file, remote_path='/tmp')
+                    scpc.put(
+                        files=f"cache/{peer}-{org}.{domain}.tar.gz",
+                        remote_path='/tmp')
+                    scpc.put(
+                        files=f"cache/docker-compose-{peer}-{org}.{domain}.yaml",
+                        remote_path='/tmp')
 
 if mode == "install":
     install()

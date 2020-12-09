@@ -55,7 +55,7 @@ Organizations:
         OrdererEndpoints:
             - "orderer.{{ domain }}:7050"
         AnchorPeers:
-            - Host: peer0.{{ o['name'] }}.{{ domain }}
+            - Host: peer0-{{ o['name'] }}.{{ domain }}
               Port: 7051
 {%- endfor %}
 

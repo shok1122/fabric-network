@@ -1,3 +1,4 @@
+import glob
 import os
 import paramiko
 import scp
@@ -13,6 +14,14 @@ ENV_PATH = os.getenv('PATH')
 os.environ['PATH'] = os.getcwd() + '/bin' + ':' + ENV_PATH
 os.environ['FABRIC_CFG_PATH'] = './conf'
 print(os.getenv('PATH'))
+
+crypto_config_org = None
+with open('./conf/crypto-config-org.yaml') as f:
+    crypto_config_org = yaml.safe_load(f)
+
+connection_list = None
+with open('./secret/connection_list.yaml') as f:
+    connection_list = yaml.safe_load(f)
 
 mode = sys.argv[1]
 
@@ -81,41 +90,41 @@ def create_org():
 def create_consortium():
     subprocess.call('configtxgen -profile DefaultProfile -channelID system-channel -outputBlock ./system-genesis-block/genesis.block', shell=True)
 
-def make_tarfile(output_filename, source_dir):
+def make_tarfile(output_filename, source_dir, peer, org, domain):
     with tarfile.open(output_filename, "w:gz") as tar:
-        tar.add(source_dir, arcname=os.path.basename(source_dir))
+        tar.add(source_dir)
 
-def distribute_conf(peer, org, domain, conf):
-    print(peer + '.' + org + '.' + domain)
+def packing_conf(peer, org, domain):
+    print(peer + '-' + org + '.' + domain)
     path = f"organizations/peerOrganizations/{org}.{domain}/"
-    tar_file = f"cache/{peer}.{org}.{domain}.tar.gz"
-    make_tarfile(tar_file, path)
+    tar_file = f"cache/{peer}-{org}.{domain}.tar.gz"
+    make_tarfile(tar_file, path, peer, org, domain)
 
-    with paramiko.SSHClient() as sshc:
-        sshc.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-        hostname = f"{peer}.{org}.{domain}"
-        sshc.connect(
-            hostname=hostname,
-            port=conf['port'],
-            username=conf['username'],
-            password=conf['password'])
-        with scp.SCPClient(sshc.get_transport()) as scpc:
-            scpc.put(files=tar_file, remote_path='/tmp')
-
-
-def distribute_conf_r():
-    conf = None
-    with open('./conf/crypto-config-org.yaml') as f:
-        conf = yaml.safe_load(f)
-    conn_list = None
-    with open('./secret/connection_list.yaml') as f:
-        conn_list = yaml.safe_load(f)
-
-    for x in conf['PeerOrgs']:
-        org = (x['Name'])
+def packing_conf_r():
+    for x in crypto_config_org['PeerOrgs']:
+        org = x['Name']
         for i in range(x['Template']['Count']):
             peer = 'peer' + str(i)
-            distribute_conf(peer, org, all_conf['domain'], conn_list[org][peer])
+            packing_conf(peer, org, all_conf['domain'])
+
+def distribution():
+    domain = all_conf['domain']
+    for x in crypto_config_org['PeerOrgs']:
+        org = x['Name']
+        for i in range(x['Template']['Count']):
+            peer = 'peer' + str(i)
+            with paramiko.SSHClient() as sshc:
+                sshc.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+                hostname = f"{peer}-{org}.{domain}"
+                sshc.connect(
+                    hostname=hostname,
+                    port=connection_list[org][peer]['port'],
+                    username=connection_list[org][peer]['username'],
+                    password=connection_list[org][peer]['password'])
+                with scp.SCPClient(sshc.get_transport()) as scpc:
+                    print(hostname)
+                    tar_file = f"cache/{peer}-{org}.{domain}.tar.gz"
+                    scpc.put(files=tar_file, remote_path='/tmp')
 
 if mode == "install":
     install()
@@ -123,7 +132,8 @@ elif mode == "init":
     init()
     create_org()
     create_consortium()
+elif mode == "packaging":
+    packing_conf_r()
 elif mode == "distribution":
-    distribute_conf_r()
-
+    distribution()
 

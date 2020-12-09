@@ -41,8 +41,11 @@ services:
         - $PWD/organizations/ordererOrganizations/{{ domain }}/orderers/orderer.{{ domain }}/msp:/var/hyperledger/orderer/msp
         - $PWD/organizations/ordererOrganizations/{{ domain }}/orderers/orderer.{{ domain }}/tls/:/var/hyperledger/orderer/tls
         - $PWD/system-genesis-block/genesis.block:/var/hyperledger/orderer/orderer.genesis.block
-        - $PWD/conf/orderer.yaml:/etc/hyperledger/fabric/orderer.yaml
+        - $PWD/orderer.yaml:/etc/hyperledger/fabric/orderer.yaml
         - orderer.{{ domain }}:/var/hyperledger/production/orderer
     ports:
+      - 6060:6060
       - 7050:7050
+      - 8125:8125
+      - 8443:8443
 

@@ -1,7 +1,6 @@
 bin/*
 cache/*
 conf/*
-config/*
 docker/*
 organizations/*
 secret/*

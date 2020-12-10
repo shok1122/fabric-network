@@ -17,7 +17,7 @@ Organizations:
     - &orderer-org
         Name: orderer-org-msp
         ID: orderer-org-msp
-        MSPDir: ../organizations/ordererOrganizations/{{ domain }}/msp
+        MSPDir: ../organizations/ordererOrganizations/{{ orderer['domain'] }}/msp
         Policies:
             Readers:
                 Type: Signature
@@ -30,7 +30,7 @@ Organizations:
                 Rule: "OR('orderer-org-msp.admin')"
 
         OrdererEndpoints:
-            - orderer.{{ domain }}:7050
+            - orderer.{{ orderer['domain'] }}:7050
 
 {%- for o in orgs %}
     - &{{ o['name'] }}
@@ -38,7 +38,7 @@ Organizations:
         Name: {{ o['name'] }}
         SkipAsForeign: false
         ID: {{ o['name'] }}
-        MSPDir: ../organizations/peerOrganizations/{{ o['name'] }}.{{ domain }}/msp
+        MSPDir: ../organizations/peerOrganizations/{{ o['domain'] }}/msp
         Policies: &DefaultOrgPolicies
             Readers:
                 Type: Signature
@@ -53,9 +53,9 @@ Organizations:
                 Type: Signature
                 Rule: "OR('{{ o['name'] }}.member')"
         OrdererEndpoints:
-            - "orderer.{{ domain }}:7050"
+            - "orderer.{{ orderer['domain'] }}:7050"
         AnchorPeers:
-            - Host: peer0-{{ o['name'] }}.{{ domain }}
+            - Host: peer0.{{ o['domain'] }}
               Port: 7051
 {%- endfor %}
 
@@ -165,7 +165,7 @@ Orderer: &OrdererDefaults
 
     OrdererType: solo
     Addresses:
-        - orderer.{{ domain }}:7050
+        - orderer.{{ orderer['domain'] }}:7050
     BatchTimeout: 2s
     BatchSize:
         MaxMessageCount: 500

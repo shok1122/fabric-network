@@ -6,16 +6,16 @@
 version: '2'
 
 volumes:
-  orderer.{{ domain }}:
+  orderer.{{ orderer['domain'] }}:
 
 networks:
   default:
-    name: {{ domain }}
+    name: {{ orderer['domain'] }}
 
 services:
 
   orderer.xkeycloak.com:
-    container_name: orderer.{{ domain }}
+    container_name: orderer.{{ orderer['domain'] }}
     image: hyperledger/fabric-orderer
     environment:
       - FABRIC_LOGGING_SPEC=DEBUG
@@ -38,11 +38,11 @@ services:
     working_dir: /opt/gopath/src/github.com/hyperledger/fabric
     command: orderer
     volumes:
-        - $PWD/organizations/ordererOrganizations/{{ domain }}/orderers/orderer.{{ domain }}/msp:/var/hyperledger/orderer/msp
-        - $PWD/organizations/ordererOrganizations/{{ domain }}/orderers/orderer.{{ domain }}/tls/:/var/hyperledger/orderer/tls
+        - $PWD/organizations/ordererOrganizations/{{ orderer['domain'] }}/orderers/orderer.{{ orderer['domain'] }}/msp:/var/hyperledger/orderer/msp
+        - $PWD/organizations/ordererOrganizations/{{ orderer['domain'] }}/orderers/orderer.{{ orderer['domain'] }}/tls/:/var/hyperledger/orderer/tls
         - $PWD/system-genesis-block/genesis.block:/var/hyperledger/orderer/orderer.genesis.block
         - $PWD/orderer.yaml:/etc/hyperledger/fabric/orderer.yaml
-        - orderer.{{ domain }}:/var/hyperledger/production/orderer
+        - orderer.{{ orderer['domain'] }}:/var/hyperledger/production/orderer
     ports:
       - 6060:6060
       - 7050:7050

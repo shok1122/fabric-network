@@ -6,12 +6,12 @@
 PeerOrgs:
   {% for o in orgs %}
   - Name: {{ o['name'] }}
-    Domain: {{ o['name'] }}.{{ domain }}
+    Domain: {{ o['domain'] }}
     EnableNodeOUs: true
     Template:
       Count: {{ o['peers'] }}
       SANS:
         - localhost
     Users:
-      Count: {{ o['peers'] }}
+      Count: {{ o['users'] }}
   {% endfor %}

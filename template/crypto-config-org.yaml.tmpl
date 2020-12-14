@@ -4,14 +4,16 @@
 #
 
 PeerOrgs:
-  {% for o in orgs %}
+{%- for o in orgs %}
   - Name: {{ o['name'] }}
     Domain: {{ o['domain'] }}
     EnableNodeOUs: true
-    Template:
-      Count: {{ o['peers'] }}
-      SANS:
-        - localhost
+    Specs:
+{%- for p in o['peers'] %}
+      - Hostname: {{ p['name'] }}
+        SANS:
+          - {{ p['addr'] }}
+{%- endfor %}
     Users:
       Count: {{ o['users'] }}
-  {% endfor %}
+{%- endfor %}

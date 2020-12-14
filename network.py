@@ -92,9 +92,9 @@ def init():
     for o in gconf['orgs']:
         org_name = o['name']
         domain = o['domain']
-        for peer_num in range(int(o['peers'])):
-            print(f"=== {o['name']} -- peer{peer_num} ===")
-            peer_name = f"peer{peer_num}"
+        for p in o['peers']:
+            print(f"=== {o['name']} -- {p['name']} ===")
+            peer_name = p['name']
             peer_conf = {
                 'domain': domain,
                 'org': org_name,
@@ -132,8 +132,8 @@ def packing_conf_r():
     for x in crypto_config_org['PeerOrgs']:
         org = x['Name']
         org_conf = get_org_conf(org)
-        for i in range(x['Template']['Count']):
-            peer = 'peer' + str(i)
+        for peer_conf in org_conf['peers']:
+            peer = peer_conf['name']
             packing_conf(peer, org_conf['domain'])
 
 def distribution():
@@ -141,8 +141,8 @@ def distribution():
         org = x['Name']
         org_conf = get_org_conf(org)
         domain = org_conf['domain']
-        for i in range(x['Template']['Count']):
-            peer = 'peer' + str(i)
+        for peer_conf in org_conf['peers']:
+            peer = peer_conf['name']
             with paramiko.SSHClient() as sshc:
                 sshc.set_missing_host_key_policy(paramiko.AutoAddPolicy())
                 hostname = f"{peer}.{domain}"
@@ -155,13 +155,13 @@ def distribution():
                     print(hostname)
                     scpc.put(
                         files=f"cache/{peer}.{domain}.tar.gz",
-                        remote_path='/tmp')
+                        remote_path='/tmp/organizations.tar.gz')
                     scpc.put(
                         files=f"cache/docker-compose-{peer}.{domain}.yaml",
-                        remote_path='/tmp')
+                        remote_path='/tmp/docker-compose.yaml')
                     scpc.put(
                         files=f"conf/configtx.yaml",
-                        remote_path='/tmp')
+                        remote_path='/tmp/configtx.yaml')
 
 def create_channel_tx():
     command = f' \

@@ -9,7 +9,7 @@ https://docs.conda.io/en/latest/miniconda.html#linux-installers
 https://docs.docker.com/engine/install/ubuntu/
 https://docs.docker.com/compose/install/
 
-# Getting Started
+# Getting Start
 
 The following steps guide you through the installation and the building network.
 
@@ -21,7 +21,7 @@ Install the Hyperledger Fabric binaries and the Hyperledger Fabric docker images
 python network.sh install
 ```
 
-## Prepare entities
+## Prepare Entities
 
 All configurations are listed in `env.yaml`.
 You need to configure all parameters.
@@ -34,7 +34,7 @@ This command creates the configuration for the Hyperledger Fabric network and th
 python network.sh init
 ```
 
-## Distribute the key materials to each peer
+## Distribute a Key Material to a Peer
 
 The packaging option packs each key material for each peer into tar.gz files.
 The distribution option sends the tar.gz files to each peer.
@@ -45,7 +45,7 @@ python network.sh packaging
 python network.sh distribution
 ```
 
-## Run orderer
+## Run an Orderer
 
 You can run orderer by the up option.
 The orderer works with Docker.

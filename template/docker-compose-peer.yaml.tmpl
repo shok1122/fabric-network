@@ -75,8 +75,9 @@ services:
         - $PWD/organizations:/opt/gopath/src/github.com/hyperledger/fabric/peer/organizations
         - $PWD/scripts:/opt/gopath/src/github.com/hyperledger/fabric/peer/scripts/
         - $PWD/conf:/opt/gopath/src/github.com/hyperledger/fabric/peer/conf/
-        - $PWD/chaincodes:/opt/gopath/src/github.com/hyperledger/fabric/peer/chaincodes/
+        - $PWD/sample-chaincodes:/opt/gopath/src/github.com/hyperledger/fabric/peer/sample-chaincodes/
         - $PWD/cache:/opt/gopath/src/github.com/hyperledger/fabric/peer/cache/
+        - $PWD/env.yaml:/opt/gopath/src/github.com/hyperledger/fabric/peer/env.yaml
     depends_on:
       - {{ peer }}.{{ domain }}
 

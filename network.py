@@ -16,7 +16,6 @@ os.environ['FABRIC_CFG_PATH'] = './conf'
 os.environ['CORE_PEER_TLS_ENABLED'] = 'true'
 print(os.getenv('PATH'))
 
-crypto_config_org = None
 connection_list = None
 
 with open('./secret/connection_list.yaml') as f:
@@ -84,8 +83,6 @@ def init():
     ret_text = render('crypto-config-org.yaml.tmpl', gconf)
     save_file('conf/crypto-config-org.yaml', ret_text)
 
-    crypto_config_org = load_crypto_config_org()
-
     ret_text = render('docker-compose-orderer.yaml.tmpl', gconf)
     save_file('docker/docker-compose.yaml', ret_text)
 
@@ -128,7 +125,7 @@ def packing_conf(peer, domain):
     tar_file = f"cache/{peer}.{domain}.tar.gz"
     make_tarfile(tar_file, path, peer, domain)
 
-def packing_conf_r():
+def packing_conf_r(crypto_config_org):
     for x in crypto_config_org['PeerOrgs']:
         org = x['Name']
         org_conf = get_org_conf(org)
@@ -136,7 +133,7 @@ def packing_conf_r():
             peer = peer_conf['name']
             packing_conf(peer, org_conf['domain'])
 
-def distribution():
+def distribution(crypto_config_org):
     for x in crypto_config_org['PeerOrgs']:
         org = x['Name']
         org_conf = get_org_conf(org)
@@ -233,8 +230,6 @@ def network_up():
 def clean():
     subprocess.call('script/clean_all.sh', shell=True)
 
-crypto_config_org =load_crypto_config_org()
-
 if mode == "setup":
     setup()
 elif mode == "init":
@@ -242,8 +237,10 @@ elif mode == "init":
     create_org()
     create_consortium()
 elif mode == "packaging":
-    packing_conf_r()
+    crypto_config_org = load_crypto_config_org()
+    packing_conf_r(crypto_config_org)
 elif mode == "distribution":
+    crypto_config_org = load_crypto_config_org()
     distribution()
 elif mode == "channel":
     create_channel_tx()
@@ -257,8 +254,9 @@ elif mode == "all":
     init()
     create_org()
     create_consortium()
-    packing_conf_r()
-    distribution()
+    crypto_config_org = load_crypto_config_org()
+    packing_conf_r(crypto_config_org)
+    distribution(crypto_config_org)
     network_up()
 elif mode == "clean":
     clean()

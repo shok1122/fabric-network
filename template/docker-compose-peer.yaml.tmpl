@@ -50,7 +50,7 @@ services:
 
   cli.{{ peer }}.{{ domain }}:
     container_name: cli
-    image: hyperledger/fabric-tools
+    image: hyperledger/fabric-tools:custom
     tty: true
     stdin_open: true
     environment:

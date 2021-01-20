@@ -77,6 +77,9 @@ def init():
     ret_text = render('configtx.yaml.tmpl', gconf)
     save_file('conf/configtx.yaml', ret_text)
 
+    ret_text = render('core.yaml.tmpl', gconf)
+    save_file('conf/core.yaml', ret_text)
+
     ret_text = render('crypto-config-orderer.yaml.tmpl', gconf)
     save_file('conf/crypto-config-orderer.yaml', ret_text)
 
@@ -159,6 +162,9 @@ def distribution(crypto_config_org):
                     scpc.put(
                         files=f"conf/configtx.yaml",
                         remote_path='/tmp/configtx.yaml')
+                    scpc.put(
+                        files=f"conf/core.yaml",
+                        remote_path='/tmp/core.yaml')
 
 def create_channel_tx():
     command = f' \

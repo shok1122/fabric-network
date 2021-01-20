@@ -64,7 +64,7 @@ def save_file(path, data):
     with open(path, 'w') as f:
         f.write(data)
 
-def install():
+def setup():
     # install binaries
     files = os.listdir('bin')
     files = [ f for f in files if not f.startswith('.') ]
@@ -235,8 +235,8 @@ def clean():
 
 crypto_config_org =load_crypto_config_org()
 
-if mode == "install":
-    install()
+if mode == "setup":
+    setup()
 elif mode == "init":
     init()
     create_org()

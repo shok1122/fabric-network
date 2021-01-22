@@ -66,16 +66,16 @@ services:
       - CORE_PEER_ADDRESS={{ peer }}.{{ domain }}:7051
       - CORE_PEER_LOCALMSPID={{ org }}
       - CORE_PEER_TLS_ENABLED=true
-      - CORE_PEER_TLS_CERT_FILE=/go/organizations/peerOrganizations/{{ domain }}/peers/{{ peer }}.{{ domain }}/tls/server.crt
-      - CORE_PEER_TLS_KEY_FILE=/go/organizations/peerOrganizations/{{ domain }}/peers/{{ peer }}.{{ domain }}/tls/server.key
-      - CORE_PEER_TLS_ROOTCERT_FILE=/go/organizations/peerOrganizations/{{ domain }}/peers/{{ peer }}.{{ domain }}/tls/ca.crt
-      - CORE_PEER_MSPCONFIGPATH=/go/organizations/peerOrganizations/{{ domain }}/users/Admin@{{ domain }}/msp
+      - CORE_PEER_TLS_CERT_FILE=/go/conf/organizations/peerOrganizations/{{ domain }}/peers/{{ peer }}.{{ domain }}/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/go/conf/organizations/peerOrganizations/{{ domain }}/peers/{{ peer }}.{{ domain }}/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/go/conf/organizations/peerOrganizations/{{ domain }}/peers/{{ peer }}.{{ domain }}/tls/ca.crt
+      - CORE_PEER_MSPCONFIGPATH=/go/conf/organizations/peerOrganizations/{{ domain }}/users/Admin@{{ domain }}/msp
     working_dir: /go
     command: /bin/bash
     volumes:
         - /var/run/:/host/var/run/
         #- ../../chaincode/:/opt/gopath/src/github.com/chaincode
-        - $PWD/organizations:/go/organizations
+        - $PWD/organizations:/go/conf/organizations
         - $PWD/scripts:/go/scripts/
         - $PWD/conf:/go/conf/
         - $PWD/chaincode:/go/src

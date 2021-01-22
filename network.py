@@ -248,15 +248,9 @@ elif mode == "packaging":
 elif mode == "distribution":
     crypto_config_org = load_crypto_config_org()
     distribution()
-elif mode == "channel":
-    create_channel_tx()
-    create_anchor_peer_tx()
-    create_channel()
-    join_channel()
-    update_anchor_peers()
 elif mode == "up":
     network_up()
-elif mode == "all":
+elif mode == "startup-network":
     init()
     create_org()
     create_consortium()
@@ -264,6 +258,12 @@ elif mode == "all":
     packing_conf_r(crypto_config_org)
     distribution(crypto_config_org)
     network_up()
+elif mode == "startup-channel":
+    create_channel_tx()
+    create_anchor_peer_tx()
+    create_channel()
+    join_channel()
+    update_anchor_peers()
 elif mode == "clean":
     clean()
 

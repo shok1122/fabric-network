@@ -23,12 +23,12 @@ python network.sh install
 
 ## Prepare Entities
 
-All configurations are listed in `env.yaml`.
+All configurations are listed in `config-network.yaml`.
 You need to configure all parameters.
 Depending on your network configuration, you have to change the number of orgs.
 
-Once you configure `env.yaml`, you can execute the following command.
-This command creates the configuration for the Hyperledger Fabric network and the Hyperledger Fabric key materials for orderer and peers using `env.yaml`.
+Once you configure `config-network.yaml`, you can execute the following command.
+This command creates the configuration for the Hyperledger Fabric network and the Hyperledger Fabric key materials for orderer and peers using `config-network.yaml`.
 
 ```
 python network.sh init

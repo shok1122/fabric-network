@@ -24,7 +24,7 @@ with open('./secret/connection_list.yaml') as f:
 mode = sys.argv[1]
 
 gconf = None
-with open('env.yaml') as f:
+with open('config-network.yaml') as f:
     gconf = yaml.safe_load(f)
 
 g_pwd = os.getcwd()
@@ -165,6 +165,9 @@ def distribution(crypto_config_org):
                     scpc.put(
                         files=f"conf/core.yaml",
                         remote_path='/tmp/core.yaml')
+                    scpc.put(
+                        files=f"config-network.yaml",
+                        remote_path='/tmp/config-network.yaml')
 
 def create_channel_tx():
     command = f' \

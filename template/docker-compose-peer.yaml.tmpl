@@ -51,33 +51,36 @@ services:
   cli.{{ peer }}.{{ domain }}:
     container_name: cli
     image: hyperledger/fabric-tools:custom
+    build:
+      context: ./docker
+      dockerfile: Dockerfile-cli
     tty: true
     stdin_open: true
     environment:
-      - GOPATH=/opt/gopath
+      - GOPATH=/go
       - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
       - FABRIC_LOGGING_SPEC=INFO
       #- FABRIC_LOGGING_SPEC=DEBUG
-      - FABRIC_CFG_PATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/conf
+      - FABRIC_CFG_PATH=/go/conf
       - CORE_PEER_ID=cli
       - CORE_PEER_ADDRESS={{ peer }}.{{ domain }}:7051
       - CORE_PEER_LOCALMSPID={{ org }}
       - CORE_PEER_TLS_ENABLED=true
-      - CORE_PEER_TLS_CERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/organizations/peerOrganizations/{{ domain }}/peers/{{ peer }}.{{ domain }}/tls/server.crt
-      - CORE_PEER_TLS_KEY_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/organizations/peerOrganizations/{{ domain }}/peers/{{ peer }}.{{ domain }}/tls/server.key
-      - CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/organizations/peerOrganizations/{{ domain }}/peers/{{ peer }}.{{ domain }}/tls/ca.crt
-      - CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/organizations/peerOrganizations/{{ domain }}/users/Admin@{{ domain }}/msp
-    working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
+      - CORE_PEER_TLS_CERT_FILE=/go/organizations/peerOrganizations/{{ domain }}/peers/{{ peer }}.{{ domain }}/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/go/organizations/peerOrganizations/{{ domain }}/peers/{{ peer }}.{{ domain }}/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/go/organizations/peerOrganizations/{{ domain }}/peers/{{ peer }}.{{ domain }}/tls/ca.crt
+      - CORE_PEER_MSPCONFIGPATH=/go/organizations/peerOrganizations/{{ domain }}/users/Admin@{{ domain }}/msp
+    working_dir: /go
     command: /bin/bash
     volumes:
         - /var/run/:/host/var/run/
         #- ../../chaincode/:/opt/gopath/src/github.com/chaincode
-        - $PWD/organizations:/opt/gopath/src/github.com/hyperledger/fabric/peer/organizations
-        - $PWD/scripts:/opt/gopath/src/github.com/hyperledger/fabric/peer/scripts/
-        - $PWD/conf:/opt/gopath/src/github.com/hyperledger/fabric/peer/conf/
-        - $PWD/sample-chaincodes:/opt/gopath/src/github.com/hyperledger/fabric/peer/sample-chaincodes/
-        - $PWD/cache:/opt/gopath/src/github.com/hyperledger/fabric/peer/cache/
-        - $PWD/env.yaml:/opt/gopath/src/github.com/hyperledger/fabric/peer/env.yaml
+        - $PWD/organizations:/go/organizations
+        - $PWD/scripts:/go/scripts/
+        - $PWD/conf:/go/conf/
+        - $PWD/chaincode:/go/src
+        - $PWD/cache:/go/cache/
+        - $PWD/env.yaml:/go/env.yaml
     depends_on:
       - {{ peer }}.{{ domain }}
 

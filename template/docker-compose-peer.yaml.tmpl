@@ -52,7 +52,7 @@ services:
     container_name: cli
     image: hyperledger/fabric-tools:custom
     build:
-      context: ./docker
+      context: .
       dockerfile: Dockerfile-cli
     tty: true
     stdin_open: true

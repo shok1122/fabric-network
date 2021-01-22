@@ -234,6 +234,7 @@ def network_up():
     subprocess.call('docker-compose -f docker/docker-compose.yaml up -d', shell=True)
 
 def clean():
+    subprocess.call('docker-compose -f docker/docker-compose.yaml down --volumes', shell=True)
     subprocess.call('script/clean_all.sh', shell=True)
 
 if mode == "setup":

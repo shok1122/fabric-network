@@ -80,8 +80,6 @@ services:
         - $PWD/conf:/go/conf/
         - $PWD/chaincode/src:/go/src/
         - $PWD/cache:/go/cache/
-        - $PWD/config-network.yaml:/go/config-network.yaml
-        - $PWD/config-local.yaml:/go/config-local.yaml
     depends_on:
       - {{ peer }}.{{ domain }}
 

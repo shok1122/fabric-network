@@ -17,7 +17,7 @@ Organizations:
     - &orderer-org
         Name: orderer-org-msp
         ID: orderer-org-msp
-        MSPDir: ../organizations/ordererOrganizations/{{ orderer['domain'] }}/msp
+        MSPDir: ./organizations/ordererOrganizations/{{ orderer['domain'] }}/msp
         Policies:
             Readers:
                 Type: Signature
@@ -38,7 +38,7 @@ Organizations:
         Name: {{ o['name'] }}
         SkipAsForeign: false
         ID: {{ o['name'] }}
-        MSPDir: ../organizations/peerOrganizations/{{ o['domain'] }}/msp
+        MSPDir: ./organizations/peerOrganizations/{{ o['domain'] }}/msp
         Policies: &DefaultOrgPolicies
             Readers:
                 Type: Signature

@@ -40,8 +40,8 @@ services:
       - CORE_PEER_LOCALMSPID={{ org }}
     volumes:
         - /var/run/:/host/var/run/
-        - $PWD/organizations/peerOrganizations/{{ domain }}/peers/{{ peer }}.{{ domain }}/msp:/etc/hyperledger/fabric/msp
-        - $PWD/organizations/peerOrganizations/{{ domain }}/peers/{{ peer }}.{{ domain }}/tls:/etc/hyperledger/fabric/tls
+        - $PWD/conf/organizations/peerOrganizations/{{ domain }}/peers/{{ peer }}.{{ domain }}/msp:/etc/hyperledger/fabric/msp
+        - $PWD/conf/organizations/peerOrganizations/{{ domain }}/peers/{{ peer }}.{{ domain }}/tls:/etc/hyperledger/fabric/tls
         - {{ peer }}.{{ domain }}:/var/hyperledger/production
     working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
     command: peer node start
@@ -75,11 +75,12 @@ services:
     volumes:
         - /var/run/:/host/var/run/
         #- ../../chaincode/:/opt/gopath/src/github.com/chaincode
-        - $PWD/organizations:/go/conf/organizations/
+        - $PWD/conf/organizations:/go/conf/organizations/
         - $PWD/scripts:/go/scripts/
         - $PWD/conf:/go/conf/
         - $PWD/chaincode/src:/go/src/
         - $PWD/cache:/go/cache/
+        - $PWD/channel-artifacts:/go/channel-artifacts/
     depends_on:
       - {{ peer }}.{{ domain }}
 

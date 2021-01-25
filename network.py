@@ -30,9 +30,12 @@ with open('config-network.yaml') as f:
 g_pwd = os.getcwd()
 g_orderer_domain = gconf['orderer']['domain']
 g_channel = gconf['channel']
-g_path_orderer_ca = f'{g_pwd}/organizations/ordererOrganizations/{g_orderer_domain}/orderers/orderer.{g_orderer_domain}/msp/tlscacerts/tlsca.{g_orderer_domain}-cert.pem'
+g_path_orderer_ca = f'{g_pwd}/conf/organizations/ordererOrganizations/{g_orderer_domain}/orderers/orderer.{g_orderer_domain}/msp/tlscacerts/tlsca.{g_orderer_domain}-cert.pem'
 
 env = Environment(loader=FileSystemLoader('template'))
+
+def print_bannar(text):
+    print(f"> {text}")
 
 def load_crypto_config_org():
     if os.path.exists('./conf/crypto-config-org.yaml'):
@@ -51,8 +54,8 @@ def set_org_env(org):
     org_conf = get_org_conf(org)
     domain = org_conf['domain']
     os.environ['CORE_PEER_LOCALMSPID'] = org_conf['name']
-    os.environ['CORE_PEER_TLS_ROOTCERT_FILE'] = f"{g_pwd}/organizations/peerOrganizations/{domain}/peers/peer0.{domain}/tls/ca.crt"
-    os.environ['CORE_PEER_MSPCONFIGPATH'] = f"{g_pwd}/organizations/peerOrganizations/{domain}/users/Admin@{domain}/msp"
+    os.environ['CORE_PEER_TLS_ROOTCERT_FILE'] = f"{g_pwd}/conf/organizations/peerOrganizations/{domain}/peers/peer0.{domain}/tls/ca.crt"
+    os.environ['CORE_PEER_MSPCONFIGPATH'] = f"{g_pwd}/conf/organizations/peerOrganizations/{domain}/users/Admin@{domain}/msp"
     os.environ['CORE_PEER_ADDRESS'] = f"peer0.{domain}:7051"
 
 def render(file_name, conf):
@@ -74,6 +77,9 @@ def setup():
     subprocess.call('script/install-fabric.sh docker', shell=True)
 
 def init():
+
+    print_bannar('init')
+
     ret_text = render('configtx.yaml.tmpl', gconf)
     save_file('conf/configtx.yaml', ret_text)
 
@@ -113,18 +119,24 @@ def init():
             save_file(f"cache/config-peer-{p['name']}.{o['domain']}.yaml", ret_text)
 
 def create_org():
-    path = 'organizations/ordererOrganizations'
+
+    print_bannar('create org')
+
+    path = 'conf/organizations/ordererOrganizations'
     if os.path.exists(path):
         shutil.rmtree(path)
 
-    path = 'organizations/peerOrganizations'
+    path = 'conf/organizations/peerOrganizations'
     if os.path.exists(path):
         shutil.rmtree(path)
 
-    subprocess.call('cryptogen generate --config=./conf/crypto-config-orderer.yaml --output=organizations', shell=True)
-    subprocess.call('cryptogen generate --config=./conf/crypto-config-org.yaml --output=organizations', shell=True)
+    subprocess.call('cryptogen generate --config=./conf/crypto-config-orderer.yaml --output=conf/organizations', shell=True)
+    subprocess.call('cryptogen generate --config=./conf/crypto-config-org.yaml --output=conf/organizations', shell=True)
 
 def create_consortium():
+
+    print_bannar('create consortium')
+
     subprocess.call('configtxgen -profile DefaultProfile -channelID system-channel -outputBlock ./system-genesis-block/genesis.block', shell=True)
 
 def make_tarfile(output_filename, source_dir, peer, domain):
@@ -132,8 +144,8 @@ def make_tarfile(output_filename, source_dir, peer, domain):
         tar.add(source_dir)
 
 def packing_conf(peer, domain):
-    print(peer + '.' + domain)
-    path = "organizations"
+    print(f"> packing conf ({peer} + '.' + {domain})")
+    path = "conf/organizations"
     tar_file = f"cache/{peer}.{domain}.tar.gz"
     make_tarfile(tar_file, path, peer, domain)
 
@@ -146,6 +158,7 @@ def packing_conf_r(crypto_config_org):
             packing_conf(peer, org_conf['domain'])
 
 def distribution(crypto_config_org):
+    print_bannar('distribution')
     for x in crypto_config_org['PeerOrgs']:
         org = x['Name']
         org_conf = get_org_conf(org)

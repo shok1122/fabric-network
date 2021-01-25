@@ -103,6 +103,15 @@ def init():
             ret_text = render('docker-compose-peer.yaml.tmpl', peer_conf)
             save_file(f"cache/docker-compose-{peer_name}.{domain}.yaml", ret_text)
 
+    data = {}
+    for o in gconf['orgs']:
+        data['domain'] = o['domain']
+        data['org'] = o['name']
+        for p in o['peers']:
+            data['peer'] = p['name']
+            ret_text = render('config-peer.yaml.tmpl', data)
+            save_file(f"cache/config-peer-{p['name']}.{o['domain']}.yaml", ret_text)
+
 def create_org():
     path = 'organizations/ordererOrganizations'
     if os.path.exists(path):
@@ -160,14 +169,17 @@ def distribution(crypto_config_org):
                         files=f"cache/docker-compose-{peer}.{domain}.yaml",
                         remote_path='/tmp/docker-compose.yaml')
                     scpc.put(
+                        files=f"cache/config-peer-{peer}.{domain}.yaml",
+                        remote_path='/tmp/config-peer.yaml')
+                    scpc.put(
+                        files=f"config-network.yaml",
+                        remote_path='/tmp/config-network.yaml')
+                    scpc.put(
                         files=f"conf/configtx.yaml",
                         remote_path='/tmp/configtx.yaml')
                     scpc.put(
                         files=f"conf/core.yaml",
                         remote_path='/tmp/core.yaml')
-                    scpc.put(
-                        files=f"config-network.yaml",
-                        remote_path='/tmp/config-network.yaml')
 
 def create_channel_tx():
     command = f' \

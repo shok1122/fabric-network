@@ -290,8 +290,8 @@ elif mode == "startup-channel":
     create_channel_tx()
     create_anchor_peer_tx()
     create_channel()
-    join_channel()
-    update_anchor_peers()
+    #join_channel()
+    #update_anchor_peers()
 elif mode == "clean":
     clean()
 

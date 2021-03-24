@@ -23,9 +23,8 @@ python ctrl.py install
 
 ## Create Consortiums
 
-All configurations are listed in `config-network.yaml`.
-You need to configure all parameters.
-Depending on your network configuration, you have to change the number of orgs.
+All configurations, which is needed to create consortiums, will be listed in `config-network.yaml`.
+You need to create `config-network.yaml` from scratch, but you can refer to `config-network.sample.yaml`.
 
 Once you configure `config-network.yaml`, you can execute the following command.
 This command creates the configuration for the Hyperledger Fabric network and the Hyperledger Fabric key materials for orderer and peers using `config-network.yaml`.

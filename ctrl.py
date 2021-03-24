@@ -266,7 +266,7 @@ def clean():
 
 if mode == "install":
     install()
-elif mode == "init":
+elif mode == "create-consortium":
     init()
     create_org()
     create_consortium()

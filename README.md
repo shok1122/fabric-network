@@ -21,7 +21,7 @@ Install the Hyperledger Fabric binaries and the Hyperledger Fabric docker images
 python ctrl.py install
 ```
 
-## Prepare Entities
+## Create Consortiums
 
 All configurations are listed in `config-network.yaml`.
 You need to configure all parameters.
@@ -31,7 +31,7 @@ Once you configure `config-network.yaml`, you can execute the following command.
 This command creates the configuration for the Hyperledger Fabric network and the Hyperledger Fabric key materials for orderer and peers using `config-network.yaml`.
 
 ```
-python ctrl.py init
+python ctrl.py create-consortium
 ```
 
 ## Distribute a Key Material to a Peer

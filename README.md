@@ -18,7 +18,7 @@ The following steps guide you through the installation and the building network.
 Install the Hyperledger Fabric binaries and the Hyperledger Fabric docker images by following the command.
 
 ```
-python network.sh install
+python ctrl.py install
 ```
 
 ## Prepare Entities
@@ -31,7 +31,7 @@ Once you configure `config-network.yaml`, you can execute the following command.
 This command creates the configuration for the Hyperledger Fabric network and the Hyperledger Fabric key materials for orderer and peers using `config-network.yaml`.
 
 ```
-python network.sh init
+python ctrl.py init
 ```
 
 ## Distribute a Key Material to a Peer
@@ -41,8 +41,8 @@ The distribution option sends the tar.gz files to each peer.
 To send these files, you need to be able to communicate by hostname.
 
 ```
-python network.sh packaging
-python network.sh distribution
+python ctrl.py packaging
+python ctrl.py distribution
 ```
 
 ## Run an Orderer
@@ -51,6 +51,6 @@ You can run orderer by the up option.
 The orderer works with Docker.
 
 ```
-python network.sh up
+python ctrl.py up
 ```
 

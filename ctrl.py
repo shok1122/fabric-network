@@ -275,7 +275,7 @@ elif mode == "packaging":
     packing_conf_r(crypto_config_org)
 elif mode == "distribution":
     crypto_config_org = load_crypto_config_org()
-    distribution()
+    distribution(crypto_config_org)
 elif mode == "up":
     network_up()
 elif mode == "startup-network":

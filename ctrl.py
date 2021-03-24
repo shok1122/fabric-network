@@ -76,9 +76,9 @@ def install():
     # install docker images
     subprocess.call('script/install-fabric.sh docker', shell=True)
 
-def init():
+def create_settings():
 
-    print_bannar('init')
+    print_bannar('create settings')
 
     ret_text = render('configtx.yaml.tmpl', gconf)
     save_file('conf/configtx.yaml', ret_text)
@@ -267,7 +267,7 @@ def clean():
 if mode == "install":
     install()
 elif mode == "create-consortium":
-    init()
+    create_settings()
     create_org()
     create_consortium()
 elif mode == "packaging":
@@ -279,7 +279,7 @@ elif mode == "distribution":
 elif mode == "up":
     network_up()
 elif mode == "startup-network":
-    init()
+    create_settings()
     create_org()
     create_consortium()
     crypto_config_org = load_crypto_config_org()

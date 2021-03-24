@@ -66,7 +66,7 @@ def save_file(path, data):
     with open(path, 'w') as f:
         f.write(data)
 
-def setup():
+def install():
     # install binaries
     files = os.listdir('bin')
     files = [ f for f in files if not f.startswith('.') ]
@@ -264,8 +264,8 @@ def network_up():
 def clean():
     subprocess.call('script/clean_all.sh', shell=True)
 
-if mode == "setup":
-    setup()
+if mode == "install":
+    install()
 elif mode == "init":
     init()
     create_org()

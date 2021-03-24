@@ -21,32 +21,32 @@ Install the Hyperledger Fabric binaries and the Hyperledger Fabric docker images
 python ctrl.py install
 ```
 
-## Create Consortiums
+## Create consortiums
 
 All configurations, which is needed to create consortiums, will be listed in `config-network.yaml`.
 You need to create `config-network.yaml` from scratch, but you can refer to `config-network.sample.yaml`.
 
 Once you configure `config-network.yaml`, you can execute the following command.
-This command creates the configuration for the Hyperledger Fabric network and the Hyperledger Fabric key materials for orderer and peers using `config-network.yaml`.
+Using `config-network.yaml`, this command creates configuration files of a Hyperledger Fabric network and key materials for an orderer and peers.
 
 ```
 python ctrl.py create-consortium
 ```
 
-## Distribute a Key Material to a Peer
+## Distribute key materials to all the peers
 
 The packaging option packs each key material for each peer into tar.gz files.
 The distribution option sends the tar.gz files to each peer.
-To send these files, you need to be able to communicate by hostname.
+To send these files, it uses the FQDN of peers.
 
 ```
 python ctrl.py packaging
 python ctrl.py distribution
 ```
 
-## Run an Orderer
+## Run the orderer
 
-You can run orderer by the up option.
+You can run the orderer by the following command.
 The orderer works with Docker.
 
 ```

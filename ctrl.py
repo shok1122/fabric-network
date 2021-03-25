@@ -92,22 +92,8 @@ def create_settings():
     ret_text = render('crypto-config-org.yaml.tmpl', gconf)
     save_file('conf/crypto-config-org.yaml', ret_text)
 
-    ret_text = render('docker-compose-orderer.yaml.tmpl', gconf)
+    ret_text = render('docker-compose.yaml.tmpl', gconf)
     save_file('docker/docker-compose.yaml', ret_text)
-
-    for o in gconf['orgs']:
-        org_name = o['name']
-        domain = o['domain']
-        for p in o['peers']:
-            print(f"=== {o['name']} -- {p['name']} ===")
-            peer_name = p['name']
-            peer_conf = {
-                'domain': domain,
-                'org': org_name,
-                'peer': peer_name
-            }
-            ret_text = render('docker-compose-peer.yaml.tmpl', peer_conf)
-            save_file(f"cache/docker-compose-{peer_name}.{domain}.yaml", ret_text)
 
     data = {}
     for o in gconf['orgs']:

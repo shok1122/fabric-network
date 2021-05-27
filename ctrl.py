@@ -165,9 +165,6 @@ def distribution(crypto_config_org):
                         files=f"cache/{peer}.{domain}.tar.gz",
                         remote_path='/tmp/organizations.tar.gz')
                     scpc.put(
-                        files=f"cache/docker-compose-{peer}.{domain}.yaml",
-                        remote_path='/tmp/docker-compose.yaml')
-                    scpc.put(
                         files=f"cache/config-peer-{peer}.{domain}.yaml",
                         remote_path='/tmp/config-peer.yaml')
                     scpc.put(
@@ -247,6 +244,9 @@ def update_anchor_peers():
 def network_up():
     subprocess.call('docker-compose -f docker/docker-compose.yaml up -d', shell=True)
 
+def network_down():
+    subprocess.call('docker-compose -f docker/docker-compose.yaml down', shell=True)
+
 def clean():
     subprocess.call('script/clean_all.sh', shell=True)
 
@@ -264,6 +264,8 @@ elif mode == "distribution":
     distribution(crypto_config_org)
 elif mode == "up":
     network_up()
+elif mode == "down":
+    network_down()
 elif mode == "startup-network":
     create_settings()
     create_org()

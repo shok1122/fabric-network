@@ -6,5 +6,6 @@ docker/*
 organizations/*
 secret/*
 system-genesis-block/*
+config-network.yaml
 
 !.gitkeep

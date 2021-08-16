@@ -81,7 +81,7 @@ def install():
 def create_project(_org_num):
     os.mkdir(g_pwd)
     os.mkdir(g_pwd + '/bin')
-    os.mkdir(g_pwd + '/cache')
+    os.mkdir(g_pwd + '/public')
     os.mkdir(g_pwd + '/channel-artifacts')
     os.mkdir(g_pwd + '/conf')
     os.mkdir(g_pwd + '/conf/organizations')
@@ -117,15 +117,6 @@ def create_settings():
     ret_text = render('docker-compose.yaml.tmpl', gconf)
     save_file(f'{g_pwd}/docker-compose.yaml', ret_text)
 
-    data = {}
-    for o in gconf['orgs']:
-        data['domain'] = o['domain']
-        data['org'] = o['name']
-        for p in o['peers']:
-            data['peer'] = p['name']
-            ret_text = render('config-peer.yaml.tmpl', data)
-            save_file(f"{g_pwd}/cache/config-peer-{p['name']}.{o['domain']}.yaml", ret_text)
-
 def create_org():
 
     print_bannar('create org')
@@ -151,11 +142,33 @@ def make_tarfile(output_filename, source_dir, peer, domain):
     with tarfile.open(output_filename, "w:gz") as tar:
         tar.add(source_dir)
 
-def packing_conf(peer, domain):
+def packing_conf(org, peer, domain):
     print(f"> packing conf ({peer} + '.' + {domain})")
+
+    os.mkdir(f"{g_pwd}/public/{org}")
+    os.mkdir(f"{g_pwd}/public/{org}/{peer}.{domain}")
+
     path = f"{g_pwd}/conf/organizations"
-    tar_file = f"{g_pwd}/cache/{peer}.{domain}.tar.gz"
+    tar_file = f"{g_pwd}/public/{org}/{peer}.{domain}/organizations.tar.gz"
     make_tarfile(tar_file, path, peer, domain)
+
+    data = {
+        'domain': domain,
+        'org': org
+    }
+    ret_text = render('config-peer.yaml.tmpl', data)
+    save_file(f"{g_pwd}/public/{org}/{peer}.{domain}/config-peer.yaml", ret_text)
+    #for o in gconf['orgs']:
+    #    data['domain'] = o['domain']
+    #    data['org'] = o['name']
+    #    for p in o['peers']:
+    #        data['peer'] = p['name']
+    #        ret_text = render('config-peer.yaml.tmpl', data)
+    #        save_file(f"{g_pwd}/public/{p['name']}.{o['domain']}/config-peer.yaml", ret_text)
+
+    shutil.copyfile(f"{g_pwd}/config-network.yaml", f"{g_pwd}/public/{org}/{peer}.{domain}/config-network.yaml")
+    shutil.copyfile(f"{g_pwd}/conf/configtx.yaml", f"{g_pwd}/public/{org}/{peer}.{domain}/configtx.yaml")
+    shutil.copyfile(f"{g_pwd}/conf/core.yaml", f"{g_pwd}/public/{org}/{peer}.{domain}/core.yaml")
 
 def packing_conf_r(crypto_config_org):
     for x in crypto_config_org['PeerOrgs']:
@@ -163,7 +176,7 @@ def packing_conf_r(crypto_config_org):
         org_conf = get_org_conf(org)
         for peer_conf in org_conf['peers']:
             peer = peer_conf['name']
-            packing_conf(peer, org_conf['domain'])
+            packing_conf(org, peer, org_conf['domain'])
 
 def distribution(crypto_config_org):
     connection_list = None
@@ -187,10 +200,10 @@ def distribution(crypto_config_org):
                 with scp.SCPClient(sshc.get_transport()) as scpc:
                     print(hostname)
                     scpc.put(
-                        files=f"{g_pwd}/cache/{peer}.{domain}.tar.gz",
+                        files=f"{g_pwd}/public/{peer}.{domain}/organizations.tar.gz",
                         remote_path='/tmp/organizations.tar.gz')
                     scpc.put(
-                        files=f"{g_pwd}/cache/config-peer-{peer}.{domain}.yaml",
+                        files=f"{g_pwd}/public/{peer}.{domain}/config-peer.yaml",
                         remote_path='/tmp/config-peer.yaml')
                     scpc.put(
                         files=f"config-network.yaml",

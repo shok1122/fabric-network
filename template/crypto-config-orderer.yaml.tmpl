@@ -20,4 +20,4 @@ OrdererOrgs:
       - Hostname: orderer
         SANS:
           - localhost
-          - {{ orderer['addr'] }}
+          - orderer.{{ orderer['domain'] }}

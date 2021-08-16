@@ -1,0 +1,12 @@
+orderer: # Orderer settings.
+  domain: sample.net # Domain name of the orderer. The FQDN of the orderer is orderer.sample.net
+
+orgs:
+  {%- for i in range(org_num) %}
+  - name: org{{i}}
+    domain: org{{i}}.com
+    peers:
+      - name: peer0
+    users: 1
+  {%- endfor %}
+

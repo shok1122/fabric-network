@@ -1,0 +1,15 @@
+orderer: # Orderer settings.
+  domain: sample.net # Domain name of the orderer. The FQDN of the orderer is orderer.sample.net.
+orgs: # Organizations settings.
+  - name: org1 # Name of the first organization.
+    domain: org1.com # Domain of the first organization.
+    peers: # Peers settings in the first organization.
+      - name: peer0 # Name of the first peer. The FQDN of the peer is peer0.org1.com.
+      - name: peer1 # Name of the second ...
+    users: 1 # Number of users
+  - name: org2 # Name of the second organization.
+    domain: ...
+    peers:
+      - name: ...
+    users: ...
+

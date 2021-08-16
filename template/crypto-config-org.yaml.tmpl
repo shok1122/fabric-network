@@ -12,7 +12,7 @@ PeerOrgs:
 {%- for p in o['peers'] %}
       - Hostname: {{ p['name'] }}
         SANS:
-          - {{ p['addr'] }}
+          - {{ p['name'] }}.{{ o['domain'] }}
 {%- endfor %}
     Users:
       Count: {{ o['users'] }}

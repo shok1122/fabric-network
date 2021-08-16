@@ -1,11 +1,3 @@
-bin/*
-cache/*
-channel-artifacts/*
-conf/*
-docker/*
-organizations/*
-secret/*
-system-genesis-block/*
-config-network.yaml
+projects/*
 
 !.gitkeep

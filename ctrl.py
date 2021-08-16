@@ -87,6 +87,8 @@ def create_project(_org_num):
     os.mkdir(g_pwd + '/conf/organizations')
     os.mkdir(g_pwd + '/system-genesis-block')
 
+    shutil.copyfile("template/orderer.yaml", f"{g_pwd}/orderer.yaml")
+
     data = {
         'org_num': int(_org_num)
     }

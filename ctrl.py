@@ -78,7 +78,7 @@ def install():
     # install docker images
     subprocess.call('script/install-fabric.sh docker', shell=True)
 
-def create_project(_org_num):
+def create_project(_org_num, _network, _is_local):
     os.mkdir(g_pwd)
     os.mkdir(g_pwd + '/bin')
     os.mkdir(g_pwd + '/public')
@@ -90,7 +90,9 @@ def create_project(_org_num):
     shutil.copyfile("template/orderer.yaml", f"{g_pwd}/orderer.yaml")
 
     data = {
-        'org_num': int(_org_num)
+        'org_num': int(_org_num),
+        'network': _network,
+        'is_local': _is_local
     }
 
     ret_text = render('config-network.yaml.tmpl', data)
@@ -216,17 +218,19 @@ def distribution(crypto_config_org):
                         remote_path='/tmp/core.yaml')
 
 def network_up():
-    subprocess.call('docker-compose -f {g_pwd}/docker-compose.yaml up -d', shell=True)
+    subprocess.call(f'(cd {g_pwd}; docker-compose -f docker-compose.yaml up -d)', shell=True)
 
 def network_down():
-    subprocess.call('docker-compose -f {g_pwd}/docker-compose.yaml down', shell=True)
+    subprocess.call(f'(cd {g_pwd}; docker-compose -f docker-compose.yaml down)', shell=True)
 
 def clean():
     subprocess.call('script/clean_all.sh', shell=True)
 
 if mode == "create-project":
     org_num = sys.argv[3]
-    create_project(org_num)
+    network = sys.argv[4]
+    is_local = sys.argv[5].lower() in ["true", "yes"]
+    create_project(org_num, network, is_local)
 elif mode == "create-consortium":
     load_network_config()
     create_settings()

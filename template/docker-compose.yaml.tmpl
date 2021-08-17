@@ -8,13 +8,19 @@ version: '2'
 volumes:
   orderer.{{ orderer['domain'] }}:
 
+{%- if local['enable'] %}
 networks:
   default:
-    name: {{ orderer['domain'] }}
+    external:
+      name: {{ local['network'] }}
+{%- else %}
+networks:
+  orderer.{{ orderer['domain'] }}:
+{%- endif %}
 
 services:
 
-  orderer.xkeycloak.com:
+  orderer.{{ orderer['domain'] }}:
     container_name: orderer.{{ orderer['domain'] }}
     image: hyperledger/fabric-orderer
     environment:
@@ -43,9 +49,11 @@ services:
         - $PWD/system-genesis-block/genesis.block:/var/hyperledger/orderer/orderer.genesis.block
         - $PWD/orderer.yaml:/etc/hyperledger/fabric/orderer.yaml
         - orderer.{{ orderer['domain'] }}:/var/hyperledger/production/orderer
+{%- if not local['enable'] %}
     ports:
       - 6060:6060
       - 7050:7050
       - 8125:8125
       - 8443:8443
+{%- endif %}
 

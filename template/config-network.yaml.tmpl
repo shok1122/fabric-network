@@ -1,5 +1,9 @@
-orderer: # Orderer settings.
-  domain: sample.net # Domain name of the orderer. The FQDN of the orderer is orderer.sample.net
+local:
+  enable: {{ is_local }}
+  network: {{ network }}
+
+orderer:
+  domain: sample.net
 
 orgs:
   {%- for i in range(org_num) %}
